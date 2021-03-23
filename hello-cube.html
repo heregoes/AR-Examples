@@ -135,6 +135,7 @@ function initialize()
 				markerRoot1.add(mesh1)
 
 				domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+
 				domEvents.addEventListener(mesh1, 'click', () => {
 					console.log('clickedd')
 					window.open(
@@ -150,9 +151,10 @@ function initialize()
                             '_blank' // <- This is what makes it open in a new window.
                         )
 				})
-				function clickEvent(contentUrl) {
 
-				}
+				domEvents.addEventListener(mesh1, 'mousedown', () => {
+					alert('oooo')
+				})
 			})
 		} catch (e) {
 			console.error(e)
