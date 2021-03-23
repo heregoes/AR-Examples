@@ -117,7 +117,7 @@ function initialize()
 			const data = await result.json()
 			const { pushPins } = data.markers[0]
 			pushPins.forEach((pin, idx) => {
-				let geometry1	= new THREE.CylinderGeometry(0.1,0.1,0.4);
+				let geometry1	= new THREE.CylinderGeometry(0.2,0.2,0.4);
 				let material1	= new THREE.MeshNormalMaterial({
 					transparent: true,
 					opacity: 0.7,
