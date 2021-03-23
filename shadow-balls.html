@@ -134,13 +134,13 @@ function initialize()
 	ballMeshArray = [];
 	let ballTexture = loader.load("images/basketball-gray.png");
 	let ballColors = [ 0xff0000, 0x009900, 0xff8800, 0x0000ff ];
-	let p = 1;
+	let p = 2;
 	let ballPositions = [ new THREE.Vector3(p,1,p), new THREE.Vector3(-p,1,p), 
 	                      new THREE.Vector3(-p,1,-p), new THREE.Vector3(p,1,-p) ];
 	for (let n = 0; n < 4; n++)
 	{
 		let ballMesh = new THREE.Mesh(
-			new THREE.SphereGeometry(0.5, 32, 32),
+			new THREE.SphereGeometry(0.3, 32, 32),
 			new THREE.MeshLambertMaterial({ 
 				map: ballTexture, 
 				color: ballColors[n]
