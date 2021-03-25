@@ -129,7 +129,7 @@ function initialize()
 				.load( 'grass.obj', function ( group ) {
 					mesh0 = group.children[0];
 					mesh0.material.side = THREE.DoubleSide;
-					mesh0.position.y = 0.25;
+					mesh0.position.y = -0.25;
 					mesh0.scale.set(0.25,0.25,0.25);
 					markerRoot1.add(mesh0);
 				}, onProgress, onError );
@@ -160,17 +160,6 @@ function initialize()
 
 				domEvents = new THREEx.DomEvents(camera, renderer.domElement);
 
-
-				// mesh1.on('click', function(ev) {
-				// 	// blink(document.querySelector('#click'));
-				// 	console.log('clickedddd')
-				// 	// console.log('%c' + cube.name + '%c => click', 'color: #fff; background: #41b882; padding: 3px 4px;', 'color: #41b882; background: #fff;');
-				// });
-				// mesh1.on('touchstart', function(ev) {
-				// 	alert('touched')
-				// 	// blink(document.querySelector('#touchstart'));
-				// 	// console.log('%c' + cube.name + '%c => touchstart', 'color: #fff; background: #41b882; padding: 3px 4px;', 'color: #41b882; background: #fff;');
-				// });
 				domEvents.addEventListener(mesh1, 'click', () => {
 					console.log('clickedd')
 					window.open(
@@ -179,13 +168,13 @@ function initialize()
                         )
 				}, false);
 
-				// domEvents.addEventListener(mesh1, 'touchstart', () => {
-				// 	console.log('touchedd')
-				// 	window.open(
-                //             pin.contentUrl,
-                //             '_blank' // <- This is what makes it open in a new window.
-                //         )
-				// })
+				domEvents.addEventListener(mesh1, 'touchstart', () => {
+					console.log('touchedd')
+					window.open(
+                            pin.contentUrl,
+                            '_blank' // <- This is what makes it open in a new window.
+                        )
+				})
 			})
 		} catch (e) {
 			console.error(e)
