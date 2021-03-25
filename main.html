@@ -25,189 +25,191 @@
 
 <script>
 
-var scene, camera, renderer, clock, deltaTime, totalTime;
-
-var arToolkitSource, arToolkitContext;
-
-var markerRoot1, markerRoot2;
-
-var mesh1;
-
-initialize();
-animate();
-
-
-function initialize()
-{
-	scene = new THREE.Scene();
-
-	let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
-	scene.add( ambientLight );
-				
-	camera = new THREE.Camera();
-	scene.add(camera);
-
-	renderer = new THREE.WebGLRenderer({
-		antialias : true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( 640, 480, true );
-	
-	renderer.domElement.style.position = 'absolute'
-	renderer.domElement.style.top = '0px'
-	renderer.domElement.style.left = '0px'
-	document.body.appendChild( renderer.domElement );
-
-	clock = new THREE.Clock();
-	deltaTime = 0;
-	totalTime = 0;
-	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitSource
-	////////////////////////////////////////////////////////////
-
-	arToolkitSource = new THREEx.ArToolkitSource({
-		sourceType : 'webcam',
-	});
-
-	function onResize()
-	{
-		arToolkitSource.onResize()	
-		arToolkitSource.copySizeTo(renderer.domElement)	
-		if ( arToolkitContext.arController !== null )
+		var scene, camera, renderer, clock, deltaTime, totalTime;
+		
+		var arToolkitSource, arToolkitContext;
+		
+		var markerRoot1, markerRoot2;
+		
+		var mesh1;
+		
+		initialize();
+		animate();
+		
+		
+		function initialize()
 		{
-			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
-		}	
-	}
-
-	arToolkitSource.init(function onReady(){
-		onResize()
-	});
-	
-	// handle resize event
-	window.addEventListener('resize', function(){
-		onResize()
-	});
-	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitContext
-	////////////////////////////////////////////////////////////	
-
-	// create atToolkitContext
-	arToolkitContext = new THREEx.ArToolkitContext({
-		cameraParametersUrl: 'data/camera_para.dat',
-		detectionMode: 'mono'
-	});
-	
-	// copy projection matrix to camera when initialization complete
-	arToolkitContext.init( function onCompleted(){
-		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-	});
-
-	////////////////////////////////////////////////////////////
-	// setup markerRoots
-	////////////////////////////////////////////////////////////
-
-	// build markerControls
-	markerRoot1 = new THREE.Group();
-	scene.add(markerRoot1);
-	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern', patternUrl: "data/hiro.patt",
-	})
-
-	function onProgress(xhr) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); }
-	function onError(xhr) { console.log( 'An error happened' ); }
-
-	new THREE.MTLLoader()
-		.setPath( 'models/' )
-		.load( 'grass.mtl', function ( materials ) {
-			materials.preload();
-			new THREE.OBJLoader()
-				.setMaterials( materials )
-				.setPath( 'models/' )
-				.load( 'grass.obj', function ( group ) {
-					mesh0 = group.children[0];
-					mesh0.material.side = THREE.DoubleSide;
-					mesh0.position.y = -0.25;
-					mesh0.scale.set(0.25,0.25,0.25);
-					markerRoot1.add(mesh0);
-				}, onProgress, onError );
-		});
-
-	async function apiCall() {
-		try {
-			const result = await fetch('https://crosscomm-webarassets.s3.amazonaws.com/json/ar_map_viewer.json')
-			const data = await result.json()
-			const { pushPins } = data.markers[0]
-			pushPins.forEach((pin, idx) => {
-				let geometry1	= new THREE.CylinderGeometry(0.1,0.1,0.4);
-				let material1	= new THREE.MeshNormalMaterial({
-					transparent: true,
-					opacity: 0.7,
-					side: THREE.DoubleSide
-				});
-
-				mesh1 = new THREE.Mesh( geometry1, material1 );
-				//changes the horizontal position 
-				mesh1.position.x = pin.position.x
-				//changes how high off the marker the mesh is
-				mesh1.position.y = pin.position.y
-				// changes the vertical position
-				mesh1.position.z = pin.position.z
-	
-				markerRoot1.add(mesh1)
-
-				domEvents = new THREEx.DomEvents(camera, renderer.domElement);
-
-				domEvents.addEventListener(mesh1, 'click', () => {
-					console.log('clickedd')
-					window.open(
-                            pin.contentUrl,
-                            '_blank' // <- This is what makes it open in a new window.
-                        )
-				}, false);
-
-				domEvents.addEventListener(mesh1, 'touchstart', () => {
-					console.log('touchedd')
-					window.open(
-                            pin.contentUrl,
-                            '_blank' // <- This is what makes it open in a new window.
-                        )
-				})
+			scene = new THREE.Scene();
+		
+			let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
+			scene.add( ambientLight );
+						
+			camera = new THREE.Camera();
+			scene.add(camera);
+		
+			renderer = new THREE.WebGLRenderer({
+				antialias : true,
+				alpha: true
+			});
+			renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+			renderer.setSize( 640, 480, true );
+			
+			renderer.domElement.style.position = 'absolute'
+			renderer.domElement.style.top = '0px'
+			renderer.domElement.style.left = '0px'
+			document.body.appendChild( renderer.domElement );
+		
+			clock = new THREE.Clock();
+			deltaTime = 0;
+			totalTime = 0;
+			
+			////////////////////////////////////////////////////////////
+			// setup arToolkitSource
+			////////////////////////////////////////////////////////////
+		
+			arToolkitSource = new THREEx.ArToolkitSource({
+				sourceType : 'webcam',
+			});
+		
+			function onResize()
+			{
+				arToolkitSource.onResize()	
+				arToolkitSource.copySizeTo(renderer.domElement)	
+				if ( arToolkitContext.arController !== null )
+				{
+					arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+				}	
+			}
+		
+			arToolkitSource.init(function onReady(){
+				onResize()
+			});
+			
+			// handle resize event
+			window.addEventListener('resize', function(){
+				onResize()
+			});
+			
+			////////////////////////////////////////////////////////////
+			// setup arToolkitContext
+			////////////////////////////////////////////////////////////	
+		
+			// create atToolkitContext
+			arToolkitContext = new THREEx.ArToolkitContext({
+				cameraParametersUrl: '../data/camera_para.dat',
+				detectionMode: 'mono'
+			});
+			
+			// copy projection matrix to camera when initialization complete
+			arToolkitContext.init( function onCompleted(){
+				camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			});
+		
+			////////////////////////////////////////////////////////////
+			// setup markerRoots
+			////////////////////////////////////////////////////////////
+		
+			// build markerControls
+			markerRoot1 = new THREE.Group();
+			scene.add(markerRoot1);
+			let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+				type: 'pattern', patternUrl: "../data/hiro.patt",
 			})
-		} catch (e) {
-			console.error(e)
+		
+			function onProgress(xhr) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); }
+			function onError(xhr) { console.log( 'An error happened' ); }
+		
+			new THREE.MTLLoader()
+				.setPath( '../models/' )
+				.load( 'grass.mtl', function ( materials ) {
+					materials.preload();
+					new THREE.OBJLoader()
+						.setMaterials( materials )
+						.setPath( '../models/' )
+						.load( 'grass.obj', function ( group ) {
+							mesh0 = group.children[0];
+							mesh0.material.side = THREE.DoubleSide;
+							mesh0.position.y = -0.25;
+							mesh0.scale.set(0.25,0.25,0.25);
+							markerRoot1.add(mesh0);
+						}, onProgress, onError );
+				});
+		
+			async function apiCall() {
+				try {
+					const result = await fetch('https://crosscomm-webarassets.s3.amazonaws.com/json/ar_map_items.json')
+					const data = await result.json()
+					const { pushPins } = data.markers[0]
+					pushPins.forEach((pin, idx) => {
+						let geometry1	= new THREE.CylinderGeometry(0.1,0.1,0.4);
+						let material1	= new THREE.MeshNormalMaterial({
+							transparent: true,
+							opacity: 0.7,
+							side: THREE.DoubleSide
+						});
+						const { position, content } = pin
+						mesh1 = new THREE.Mesh( geometry1, material1 );
+						//changes the horizontal position 
+						mesh1.position.x = position.x
+						//changes how high off the marker the mesh is
+						mesh1.position.y = position.y
+						// changes the vertical position
+						mesh1.position.z = position.z
+			
+						markerRoot1.add(mesh1)
+		
+						domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+		
+						domEvents.addEventListener(mesh1, ('click' || 'touchstart'), () => {
+							console.log('clickedd')
+							//check to see if the content rendered is a 360 image
+							if (content.is360) {
+								localStorage.setItem(`locationContent${idx}`, JSON.stringify(content))
+								window.open(
+									`./locationView.html?index=${idx}`,
+									'_blank' // <- This is what makes it open in a new window.
+								)
+							} else {
+								window.open(
+									content.url,
+									'_blank' // <- This is what makes it open in a new window.
+								)
+							}
+						}, false)
+					})
+				} catch (e) {
+					console.error(e)
+				}
+			}
+		
+			apiCall()	
 		}
-	}
-	apiCall()	
-}
-
-
-function update()
-{
-	// update artoolkit on every frame
-	if ( arToolkitSource.ready !== false )
-		arToolkitContext.update( arToolkitSource.domElement );
-}
-
-
-function render()
-{
-	renderer.render( scene, camera );
-}
-
-
-function animate()
-{
-	requestAnimationFrame(animate);
-	deltaTime = clock.getDelta();
-	totalTime += deltaTime;
-	update();
-	render();
-}
-
-</script>
-
+		
+		
+		function update()
+		{
+			// update artoolkit on every frame
+			if ( arToolkitSource.ready !== false )
+				arToolkitContext.update( arToolkitSource.domElement );
+		}
+		
+		
+		function render()
+		{
+			renderer.render( scene, camera );
+		}
+		
+		
+		function animate()
+		{
+			requestAnimationFrame(animate);
+			deltaTime = clock.getDelta();
+			totalTime += deltaTime;
+			update();
+			render();
+		}
+		
+	</script>
+		
 </body>
 </html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <meta aframe-injected="" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+    <meta aframe-injected="" name="theme-color" content="black">
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+</head>
+<body>
+    <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
+      <a-assets></a-assets>
+
+      <!-- 360-degree image. -->
+      <a-sky id="image-360" radius="10"></a-sky>
+
+      <!-- Camera + cursor. -->
+      <a-camera>
+        <a-cursor 
+            id="cursor" 
+            animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150" 
+            animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500" 
+            event-set__mouseenter="_event: mouseenter; color: springgreen" 
+            event-set__mouseleave="_event: mouseleave; color: black" 
+            raycaster="objects: .link" material="" cursor="" geometry="" position=""></a-cursor>
+      </a-camera>
+      <script>
+        const url_string = window.location.href
+        const url = new URL(url_string)
+        const url_index_param = url.searchParams.get('index')
+        const sky = document.getElementById("image-360")
+        const content = JSON.parse(localStorage[`locationContent${url_index_param}`])
+
+        //add image to sky element
+        sky.setAttribute("src", content.url)
+      </script>
+</body>
+</html>
